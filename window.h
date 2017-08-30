@@ -2,11 +2,12 @@
 #define LAB309_WINDOW_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 namespace lab309 {
-	public class Sprite;
+	class Sprite;
 	
-	public class Window {
+	class Window {
 		friend class Sprite;
 		private:
 			/*ATTRIBUTES*/
@@ -19,8 +20,7 @@ namespace lab309 {
 			~Window (void);
 			
 			/*METHODS*/
-			SDL_Surface* loadTexture (const char *imgPath, int format);
-			void blit (const lab309::Sprite &sprite);
+			SDL_Surface* loadTexture (const char *imgPath);
 			void update (void);
 	};
 };

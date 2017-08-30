@@ -5,10 +5,8 @@
 #include "coordinates.h"
 #include "window.h"
 
-#define	FORMAT_BMP 1
-
 namespace lab309 {
-	public class Sprite {
+	class Sprite {
 		friend class Window;
 		private:
 			/*ATTRIBUTES*/
@@ -19,7 +17,6 @@ namespace lab309 {
 		public:
 			/*CONSTRUCTORS*/
 			Sprite (SDL_Surface *texture, int rectWidth, int rectHeight, float size);
-			~Sprite (void);
 			
 			/*GETTERS*/
 			Coordinate getSpritePos (void) const;
@@ -32,6 +29,7 @@ namespace lab309 {
 			/*METHODS*/
 			void moveX (int offset);
 			void moveY (int offset);
+			void blitTo (const Window &window);
 	};
 };
 
