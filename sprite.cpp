@@ -16,6 +16,10 @@ lab309::Coordinate lab309::Sprite::getPos (void) const {
 	return { this->displayRect.x, this->displayRect.y };
 }
 
+lab309::Coordinate lab309::Sprite::getCenter (void) const {
+	return { this->displayRect.x+this->displayRect.w/2, this->displayRect.y+this->displayRect.h/2 };
+}
+
 /*SETTERS*/
 void lab309::Sprite::setSpritePos (const lab309::Coordinate &pos) {
 	this->rect.x = pos.x*this->rect.w;
@@ -38,4 +42,16 @@ void lab309::Sprite::moveY (int offset) {
 
 void lab309::Sprite::blitTo (const lab309::Window &window) {
 	SDL_BlitScaled(this->texture, &this->rect, window.surface, &this->displayRect);
+}
+
+int lab309::collision (const lab309::Sprite &a, const lab309::Sprite &b) {
+	int colx, coly;
+	int	bxmax = b.displayRect.x+b.displayRect.w - a.displayRect.x,
+		bymax = b.displayRect.y+b.displayRect.h - a.displayRect.y,
+		bxmin = b.displayRect.x - a.displayRect.x,
+		bymin = b.displayRect.y - a.displayRect.y;
+		
+	colx = bxmax < a.displayRect.w && bxmin > 0;
+	coly = bymax < b.displayRect.h && bymin > 0;
+	return colx && coly;
 }
