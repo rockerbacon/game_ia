@@ -8,6 +8,11 @@ lab309::Fish::Fish (SDL_Surface *texture, int rectWidth, int rectHeight, float s
 }
 
 /*METHODS*/
+void lab309::Fish::setBirthDate (unsigned int birthDate) {
+	this->birthDate = birthDate;
+	this->lastReproduction = birthDate;
+}
+
 bool lab309::Fish::canReproduce (unsigned int time) const {
 	return time - this->lastReproduction > FISH_REPRODUCTIONTIME;
 }

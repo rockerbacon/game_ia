@@ -1,5 +1,5 @@
 CXX=g++ -std=c++11
-OBJS=sprite.o window.o main.o random.o fish.o
+OBJS=sprite.o window.o main.o random.o fish.o ai.o shark.o
 LFLAGS=-lSDL2 -lSDL2_image
 
 %.o: %.cpp
