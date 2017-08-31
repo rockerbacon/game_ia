@@ -129,7 +129,11 @@ int main (int argc, char **args) {
 				//colisao peixe-peixe
 				if (collision(*i.getData(), *j.getData())) {
 					//printf("fish-fish collision\n");	//debug
-					gFish.add(0, fish->reproduce(gTimer));
+					int	x = randomBetween(fish->getXPos()-fish->getDisplayWidth(), fish->getXPos()+fish->getDisplayWidth()),
+						y = randomBetween(fish->getYPos()-fish->getDisplayHeight(), fish->getYPos()+fish->getDisplayHeight());
+					addFish(x, y);
+					fish->reproduce(gTimer);
+					((Fish*)j.getData())->reproduce(gTimer);
  				}
  				
  				j++;

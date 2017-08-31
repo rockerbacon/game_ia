@@ -30,6 +30,8 @@ namespace lab309 {
 			int getXPos (void) const;
 			int getYPos (void) const;
 			Coordinate getCenter (void) const;
+			int getDisplayWidth (void) const;
+			int getDisplayHeight (void) const;
 			
 			/*SETTERS*/
 			void setSpritePos (const Coordinate &pos);

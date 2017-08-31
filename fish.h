@@ -19,7 +19,7 @@ namespace lab309 {
 			/*METHODS*/
 			bool canReproduce (unsigned int time) const;
 			bool isOld (unsigned int time) const;
-			Fish *reproduce (unsigned int time);
+			void reproduce (unsigned int time);
 	};
 };
 

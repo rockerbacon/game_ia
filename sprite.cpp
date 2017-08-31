@@ -28,6 +28,14 @@ lab309::Coordinate lab309::Sprite::getCenter (void) const {
 	return { this->displayRect.x+this->displayRect.w/2, this->displayRect.y+this->displayRect.h/2 };
 }
 
+int lab309::Sprite::getDisplayWidth (void) const {
+	return this->displayRect.w;
+}
+
+int lab309::Sprite::getDisplayHeight (void) const {
+	return this->displayRect.h;
+}
+
 /*SETTERS*/
 void lab309::Sprite::setSpritePos (const lab309::Coordinate &pos) {
 	this->rect.x = pos.x*this->rect.w;

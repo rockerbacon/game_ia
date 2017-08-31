@@ -136,12 +136,20 @@ const dataType& lab309::List<dataType>::Iterator::getData (void) const {
 /*METHODS*/
 template<typename dataType>
 typename lab309::List<dataType>::Iterator lab309::List<dataType>::Iterator::next (void) const {
-	return Iterator(this->node->next, this->index+1);
+	if (this->node != NULL) {
+		return Iterator(this->node->next, this->index+1);
+	} else {
+		return *this;
+	}
 }
 
 template<typename dataType>
 typename lab309::List<dataType>::Iterator lab309::List<dataType>::Iterator::previous (void) const {
-	return Iterator(this->node->previous, this->index-1);
+	if (this->node != NULL) {
+		return Iterator(this->node->previous, this->index-1);
+	} else {
+		return *this;
+	}
 }
 
 template<typename dataType>
