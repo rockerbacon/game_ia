@@ -34,11 +34,16 @@ namespace lab309 {
 					Node *cursor;
 
 				public:
+					Iterator (void) = default;
+					Iterator (Node *cursor) {
+						this->cursor = cursor;
+					}
+					
 					inline dataType& getData (void) {
 						return this->cursor->data;
 					}
-					inline void next (void) {
-						this->cursor = this->cursor->next;
+					inline Iterator next (void) {
+						return Iterator(this->cursor->next);
 					}
 					inline bool end (void) {
 						return this->cursor == NULL;
@@ -52,6 +57,11 @@ namespace lab309 {
 
 					Iterator& operator= (const Iterator &iterator) {
 						this->cursor = iterator.cursor;
+						return *this;
+					}
+					
+					Iterator& operator++ (void) {
+						this->cursor = this->cursor->next;
 						return *this;
 					}
 			};

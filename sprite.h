@@ -14,7 +14,7 @@ namespace lab309 {
 	class Sprite {
 		friend class Window;
 		friend int collision (const Sprite &a, const Sprite &b);
-		private:
+		protected:
 			/*ATTRIBUTES*/
 			SDL_Surface *texture;
 			SDL_Rect rect;
@@ -27,6 +27,8 @@ namespace lab309 {
 			/*GETTERS*/
 			Coordinate getSpritePos (void) const;
 			Coordinate getPos (void) const;
+			int getXPos (void) const;
+			int getYPos (void) const;
 			Coordinate getCenter (void) const;
 			
 			/*SETTERS*/

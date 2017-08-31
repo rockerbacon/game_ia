@@ -16,6 +16,14 @@ lab309::Coordinate lab309::Sprite::getPos (void) const {
 	return { this->displayRect.x, this->displayRect.y };
 }
 
+int lab309::Sprite::getXPos (void) const {
+	return this->displayRect.x;
+}
+
+int lab309::Sprite::getYPos (void) const {
+	return this->displayRect.y;
+}
+
 lab309::Coordinate lab309::Sprite::getCenter (void) const {
 	return { this->displayRect.x+this->displayRect.w/2, this->displayRect.y+this->displayRect.h/2 };
 }
@@ -46,12 +54,12 @@ void lab309::Sprite::blitTo (const lab309::Window &window) {
 
 int lab309::collision (const lab309::Sprite &a, const lab309::Sprite &b) {
 	int colx, coly;
-	int	bxmax = b.displayRect.x+b.displayRect.w - a.displayRect.x,
-		bymax = b.displayRect.y+b.displayRect.h - a.displayRect.y,
-		bxmin = b.displayRect.x - a.displayRect.x,
-		bymin = b.displayRect.y - a.displayRect.y;
+	int	bxmax = b.displayRect.x+b.displayRect.w,
+		bymax = b.displayRect.y+b.displayRect.h,
+		axmax = a.displayRect.x+a.displayRect.w,
+		aymax = a.displayRect.y+a.displayRect.h;
 		
-	colx = bxmax < a.displayRect.w && bxmin > 0;
-	coly = bymax < b.displayRect.h && bymin > 0;
+	colx = bxmax > a.displayRect.x && b.displayRect.x < axmax;
+	coly = bymax > a.displayRect.y && b.displayRect.y < aymax;
 	return colx && coly;
 }
