@@ -9,6 +9,7 @@
 #include "coordinates.h"
 
 namespace lab309 {
+	
 	class Navmesh {
 		private:
 			/*ATTRIBUTES*/
