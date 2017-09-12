@@ -4,59 +4,44 @@
 #include "Lab309_ADT_Matrix.h"
 #include "Lab309_ADT_DoublyLinkedList.h"
 #include "sprite.h"
-#include "fish.h"
-#include "shark.h"
+#include "animal.h"
 #include "coordinates.h"
 
 namespace lab309 {
 	
-	class Navmesh {
-		private:
-			/*ATTRIBUTES*/
-			int windowWidth;
-			int windowHeight;
-			lab309::Matrix<List<Sprite*>::Iterator> matrix;
-			
-		public:
-			/*CONSTRUCTORS*/
-			Navmesh (int windowWidth, int windowHeight, size_t width, size_t height);
-			
-			/*GETTERS*/
-			size_t getWidth (void) const;
-			size_t getHeight (void) const;
-			
-			/*METHODS*/
-			//arredonda uma posicao na janela para uma posicao que esteja na malha
-			Coordinate roundToWindow (Coordinate coordinate);
-			void clear (void);
-			void add (const List<Sprite*> &list);
-	};
-	
 	class WorldModel {
 		private:
+			struct Cell {
+				List<Animal*>::Iterator animal;
+			};
+			
 			/*ATTRIBUTES*/
+			const Window *window;
+			Matrix<struct Cell> navmesh;
 			unsigned int date;
-			List<Sprite*> fish;
-			List<Sprite*> shark;
+			List<Animal*> prey;
+			List<Animal*> predator;
+			
+			void mapToNavmesh (List<Animal*>::Iterator iterator);
 			
 		public:
 			/*CONSTRUCTORS*/
-			WorldModel (void);
+			WorldModel (const Window &window, size_t navmeshHeight, size_t navmeshWidth);
 			~WorldModel (void);
 			
 			/*GETTERS*/
 			unsigned int getDate (void) const;
-			const List<Sprite*>& referenceFishList (void) const;
-			const List<Sprite*>& referenceSharkList (void) const;
+			const List<Animal*>& referencePreyList (void) const;
+			const List<Animal*>& referencePredatorList (void) const;
 			
 			/*METHODS*/
-			void addFish (Fish *fish, const Coordinate &pos);
-			void addShark (Shark *shark, const Coordinate &pos);
+			void addPrey (Animal *prey, const Coordinate &pos);
+			void addPredator (Animal *predator, const Coordinate &pos);
 			
 			void timePasses (void);
 			void elderDie (void);
-			void fishReproduce (void);
-			void sharkEat (void);
+			void preyReproduce (void);
+			void predatorEat (void);
 			
 	};
 };

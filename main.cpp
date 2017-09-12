@@ -2,8 +2,7 @@
 #include "sprite.h"
 #include "Lab309_ADT_DoublyLinkedList.h"
 #include "random.h"
-#include "fish.h"
-#include "shark.h"
+#include "animal.h"
 #include "ai.h"
 #include <SDL2/SDL.h>
 #include <stdlib.h>
@@ -17,13 +16,7 @@
 
 using namespace lab309;
 
-SDL_Surface* Shark::defaultTexture = NULL;
-float Shark::defaultSize = 0.08;
-SDL_Surface* Fish::defaultTexture = NULL;
-float Fish::defaultSize = 0.15;
-
-Navmesh gNavmesh(WIDTH, HEIGHT, MESH_W, MESH_H);
-WorldModel worldModel;
+WorldModel *worldModel;
 
 bool handleInput (void) {
 	SDL_Event event;
@@ -34,15 +27,15 @@ bool handleInput (void) {
 		} else if (event.type == SDL_KEYUP) {
 			switch (event.key.keysym.sym) {
 				case SDLK_RIGHT:
-					worldModel.timePasses();
+					worldModel->timePasses();
 					//atualizar IA
 				break;
 			}
 		} else if (event.type == SDL_MOUSEBUTTONUP) {
 			if (event.button.button == SDL_BUTTON_LEFT) {
-				worldModel.addShark(new Shark(), {event.button.x, event.button.y});
+				worldModel->addPredator(newPredator(), {event.button.x, event.button.y});
 			} else if (event.button.button == SDL_BUTTON_RIGHT) {
-				worldModel.addFish(new Fish(), {event.button.x, event.button.y});
+				worldModel->addPrey(newPrey(), {event.button.x, event.button.y});
 			}
 		}
 	}
@@ -55,36 +48,35 @@ int main (int argc, char **args) {
 	SDL_Init(SDL_INIT_VIDEO);
 	IMG_Init(IMG_INIT_PNG);
 	
-	List<Sprite*>::Iterator i;
+	List<Animal*>::Iterator i;
 	
 	Window *window;
 	bool running = true;
 	
-	//inicializar janela
+	//inicializar janela e modelo do mundo
 	window = new Window("Shark IA", WIDTH, HEIGHT);
+	worldModel = new WorldModel(*window, MESH_H, MESH_W);
 	
 	//carregar texturas
-	Shark::defaultTexture = window->loadTexture("img/shark.png");
-	Fish::defaultTexture = window->loadTexture("img/fish.png");
+	defaultPredatorTexture = window->loadTexture("img/shark.png");
+	defaultPredatorSize = 0.15;
+	defaultPreyTexture = window->loadTexture("img/fish.png");
+	defaultPreySize = 0.08;
 	
 	while (running) {
 		//gerar malha de navegacao
-		gNavmesh.clear();
-		gNavmesh.add(worldModel.referenceFishList());
-		gNavmesh.add(worldModel.referenceSharkList());
-		
 		running = handleInput();
 		
 		//processar interacao de agentes com o mundo
-		worldModel.elderDie();
-		worldModel.fishReproduce();
-		worldModel.sharkEat();
+		worldModel->elderDie();
+		worldModel->preyReproduce();
+		worldModel->predatorEat();
 		
 		//desenhar mundo
-		for (i = worldModel.referenceFishList().getBeginning(); !i.end(); i++) {
+		for (i = worldModel->referencePreyList().getBeginning(); !i.end(); i++) {
 			i.getData()->blitTo(*window);
 		}
-		for (i = worldModel.referenceSharkList().getBeginning(); !i.end(); i++) {
+		for (i = worldModel->referencePredatorList().getBeginning(); !i.end(); i++) {
 			i.getData()->blitTo(*window);
 		}
 		window->update();
@@ -92,8 +84,9 @@ int main (int argc, char **args) {
 	
 end_program:
 	delete(window);
-	SDL_FreeSurface(Shark::defaultTexture);
-	SDL_FreeSurface(Fish::defaultTexture);
+	delete(worldModel);
+	SDL_FreeSurface(defaultPredatorTexture);
+	SDL_FreeSurface(defaultPreyTexture);
 	SDL_Quit();
 
 	return 0;

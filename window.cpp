@@ -12,6 +12,14 @@ lab309::Window::~Window (void) {
 	SDL_DestroyWindow(this->window);
 }
 
+int lab309::Window::getWidth (void) const {
+	return this->surface->w;
+}
+
+int lab309::Window::getHeight (void) const {
+	return this->surface->h;
+}
+
 SDL_Surface* lab309::Window::loadTexture (const char *imgPath) {
 	SDL_Surface *loaded;
 	SDL_Surface *optimized;

@@ -19,9 +19,14 @@ namespace lab309 {
 			Window (const char *title, unsigned int width, unsigned int hight);
 			~Window (void);
 			
+			/*GETTERS*/
+			int getWidth (void) const;
+			int getHeight (void) const;
+			
 			/*METHODS*/
 			SDL_Surface* loadTexture (const char *imgPath);
 			void update (void);
+			
 	};
 };
 
