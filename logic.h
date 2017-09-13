@@ -1,3 +1,7 @@
+/*
+ * Data armazenada em segundos
+ */
+
 #ifndef LAB309_AI_H
 #define LAB309_AI_H
 
@@ -5,7 +9,8 @@
 #include "Lab309_ADT_DoublyLinkedList.h"
 #include "sprite.h"
 #include "animal.h"
-#include "coordinates.h"
+#include "vertex.h"
+#include <SDL2/SDL.h>
 
 namespace lab309 {
 	
@@ -18,9 +23,10 @@ namespace lab309 {
 			/*ATTRIBUTES*/
 			const Window *window;
 			Matrix<struct Cell> navmesh;
-			unsigned int date;
+			double date;
 			List<Animal*> prey;
 			List<Animal*> predator;
+			const Vector_2d movementWheel[5] = {DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_DOWN, {0,0}};
 			
 			void mapToNavmesh (List<Animal*>::Iterator iterator);
 			
@@ -30,18 +36,19 @@ namespace lab309 {
 			~WorldModel (void);
 			
 			/*GETTERS*/
-			unsigned int getDate (void) const;
+			double getDate (void) const;
 			const List<Animal*>& referencePreyList (void) const;
 			const List<Animal*>& referencePredatorList (void) const;
 			
 			/*METHODS*/
-			void addPrey (Animal *prey, const Coordinate &pos);
-			void addPredator (Animal *predator, const Coordinate &pos);
+			void addPrey (Animal *prey, const Vector_2d &pos);
+			void addPredator (Animal *predator, const Vector_2d &pos);
 			
 			void timePasses (void);
 			void elderDie (void);
 			void preyReproduce (void);
 			void predatorEat (void);
+			void preyMove (void);
 			
 	};
 };

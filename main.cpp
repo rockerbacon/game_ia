@@ -3,10 +3,10 @@
 #include "Lab309_ADT_DoublyLinkedList.h"
 #include "random.h"
 #include "animal.h"
-#include "ai.h"
+#include "logic.h"
 #include <SDL2/SDL.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <iostream>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -54,23 +54,25 @@ int main (int argc, char **args) {
 	bool running = true;
 	
 	//inicializar janela e modelo do mundo
-	window = new Window("Shark IA", WIDTH, HEIGHT);
+	window = new Window("Shark IA", WIDTH, HEIGHT, LIMIT_NONE);
 	worldModel = new WorldModel(*window, MESH_H, MESH_W);
 	
 	//carregar texturas
 	defaultPredatorTexture = window->loadTexture("img/shark.png");
-	defaultPredatorSize = 0.15;
+	defaultPredatorSize = 0.1;
 	defaultPreyTexture = window->loadTexture("img/fish.png");
-	defaultPreySize = 0.08;
+	defaultPreySize = 0.12;
 	
 	while (running) {
 		//gerar malha de navegacao
 		running = handleInput();
 		
 		//processar interacao de agentes com o mundo
+		worldModel->timePasses();
 		worldModel->elderDie();
 		worldModel->preyReproduce();
 		worldModel->predatorEat();
+		worldModel->preyMove();
 		
 		//desenhar mundo
 		for (i = worldModel->referencePreyList().getBeginning(); !i.end(); i++) {

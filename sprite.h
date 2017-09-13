@@ -2,7 +2,7 @@
 #define LAB309SDL_SPRITE_H
 
 #include <SDL2/SDL.h>
-#include "coordinates.h"
+#include "vertex.h"
 #include "window.h"
 
 #define COLLISION_LEFT 0xd	//1101
@@ -25,19 +25,20 @@ namespace lab309 {
 			Sprite (SDL_Surface *texture, int rectWidth, int rectHeight, float size);
 			
 			/*GETTERS*/
-			Coordinate getSpritePos (void) const;
-			Coordinate getPos (void) const;
+			Vector_2d getSpritePos (void) const;
+			Vector_2d getPos (void) const;
 			int getXPos (void) const;
 			int getYPos (void) const;
-			Coordinate getCenter (void) const;
+			Vector_2d getCenter (void) const;
 			int getDisplayWidth (void) const;
 			int getDisplayHeight (void) const;
 			
 			/*SETTERS*/
-			void setSpritePos (const Coordinate &pos);
-			void setPos (const Coordinate &pos);
+			void setSpritePos (const Vector_2d &pos);
+			void setPos (const Vector_2d &pos);
 			
 			/*METHODS*/
+			void translate (const Vector_2d &offset);
 			void moveX (int offset);
 			void moveY (int offset);
 			void blitTo (const Window &window);

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <stdexcept>
+#include "vertex.h"
 
 namespace lab309 {
 
@@ -71,6 +72,13 @@ namespace lab309 {
 			}
 			inline const dataType* operator[] (size_t line) const {
 				return this->data + line*this->colums;
+			}
+			
+			inline dataType& operator[] (const Vector_2d &index) {
+				return this->referenceDataAt(index[COORDINATE_Y], index[COORDINATE_X]);
+			}
+			inline const dataType& operator[] (const Vector_2d &index) const {
+				return this->getDataAt(index[COORDINATE_Y], index[COORDINATE_X]);
 			}
 
 			//assignment

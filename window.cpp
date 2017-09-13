@@ -1,10 +1,12 @@
 #include "window.h"
 #include <SDL2/SDL_image.h>
 
-lab309::Window::Window (const char *title, unsigned int width, unsigned int hight) {
+lab309::Window::Window (const char *title, unsigned int width, unsigned int hight, unsigned int frameLimit) {
 	IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
 	this->window = SDL_CreateWindow (title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, hight, SDL_WINDOW_SHOWN);
 	this->surface = SDL_GetWindowSurface (this->window);
+	this->lastUpdate = SDL_GetTicks();
+	this->frameLimit = frameLimit;
 }
 
 lab309::Window::~Window (void) {
@@ -20,6 +22,10 @@ int lab309::Window::getHeight (void) const {
 	return this->surface->h;
 }
 
+double lab309::Window::getTimeDelta (void) const {
+	return (SDL_GetTicks() - this->lastUpdate)/1000.0;
+}
+
 SDL_Surface* lab309::Window::loadTexture (const char *imgPath) {
 	SDL_Surface *loaded;
 	SDL_Surface *optimized;
@@ -33,6 +39,11 @@ SDL_Surface* lab309::Window::loadTexture (const char *imgPath) {
 }
 
 void lab309::Window::update (void) {
+	double previousUpdate = this->lastUpdate;
+	this->lastUpdate = SDL_GetTicks();
+	if (this->lastUpdate - previousUpdate < this->frameLimit) {
+		SDL_Delay(this->frameLimit-this->lastUpdate-previousUpdate);
+	}
 	SDL_UpdateWindowSurface(this->window);
 	SDL_FillRect(this->surface, NULL, 0);
 }
