@@ -75,10 +75,10 @@ namespace lab309 {
 			}
 			
 			inline dataType& operator[] (const Vector_2d &index) {
-				return this->referenceDataAt(index[COORDINATE_Y], index[COORDINATE_X]);
+				return this->referenceDataAt((size_t)index[COORDINATE_Y], (size_t)index[COORDINATE_X]);
 			}
 			inline const dataType& operator[] (const Vector_2d &index) const {
-				return this->getDataAt(index[COORDINATE_Y], index[COORDINATE_X]);
+				return this->getDataAt((size_t)index[COORDINATE_Y], (size_t)index[COORDINATE_X]);
 			}
 
 			//assignment

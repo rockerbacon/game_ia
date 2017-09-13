@@ -1,10 +1,12 @@
 #include "sprite.h"
+#include <iostream>
 
 /*CONSTRUCTORS*/
 lab309::Sprite::Sprite (SDL_Surface *texture, int rectWidth, int rectHeight, float size) {
 	this->texture = texture;
 	this->rect = {0, 0, rectWidth, rectHeight};
 	this->displayRect = {0, 0, (int)(rectWidth*size), (int)(rectHeight*size)};
+	this->pos = {0, 0};
 }
 
 /*GETTERS*/
@@ -13,19 +15,19 @@ lab309::Vector_2d lab309::Sprite::getSpritePos (void) const {
 }
 
 lab309::Vector_2d lab309::Sprite::getPos (void) const {
-	return { (float)this->displayRect.x, (float)this->displayRect.y };
+	return this->pos;
 }
 
 int lab309::Sprite::getXPos (void) const {
-	return this->displayRect.x;
+	return this->pos[COORDINATE_X];
 }
 
 int lab309::Sprite::getYPos (void) const {
-	return this->displayRect.y;
+	return this->pos[COORDINATE_Y];
 }
 
 lab309::Vector_2d lab309::Sprite::getCenter (void) const {
-	return { (float)this->displayRect.x+this->displayRect.w/2.0f, (float)this->displayRect.y+this->displayRect.h/2.0f };
+	return { this->pos[COORDINATE_X]+this->displayRect.w/2.0f, this->pos[COORDINATE_Y]+this->displayRect.h/2.0f };
 }
 
 int lab309::Sprite::getDisplayWidth (void) const {
@@ -43,36 +45,28 @@ void lab309::Sprite::setSpritePos (const lab309::Vector_2d &pos) {
 }
 
 void lab309::Sprite::setPos (const lab309::Vector_2d &pos) {
-	this->displayRect.x = (int)pos[COORDINATE_X];
-	this->displayRect.y = (int)pos[COORDINATE_Y];
+	this->pos = pos;
 }
 
 /*METHODS*/
-void lab309::Sprite::moveX (int offset) {
-	this->displayRect.x += offset;
-}
-
-void lab309::Sprite::moveY (int offset) {
-	this->displayRect.y += offset;
-}
-
 void lab309::Sprite::blitTo (const lab309::Window &window) {
+	this->displayRect.x = this->pos[COORDINATE_X];
+	this->displayRect.y = this->pos[COORDINATE_Y];
 	SDL_BlitScaled(this->texture, &this->rect, window.surface, &this->displayRect);
 }
 
 void lab309::Sprite::translate (const Vector_2d &offset) {
-	this->displayRect.x += offset[COORDINATE_X];
-	this->displayRect.y += offset[COORDINATE_Y];
+	this->pos += offset;
 }
 
 int lab309::collision (const lab309::Sprite &a, const lab309::Sprite &b) {
 	int colx, coly;
-	int	bxmax = b.displayRect.x+b.displayRect.w,
-		bymax = b.displayRect.y+b.displayRect.h,
-		axmax = a.displayRect.x+a.displayRect.w,
-		aymax = a.displayRect.y+a.displayRect.h;
+	int	bxmax = b.pos[COORDINATE_X]+b.displayRect.w,
+		bymax = b.pos[COORDINATE_Y]+b.displayRect.h,
+		axmax = a.pos[COORDINATE_X]+a.displayRect.w,
+		aymax = a.pos[COORDINATE_Y]+a.displayRect.h;
 		
-	colx = bxmax > a.displayRect.x && b.displayRect.x < axmax;
-	coly = bymax > a.displayRect.y && b.displayRect.y < aymax;
+	colx = bxmax > a.pos[COORDINATE_X] && b.pos[COORDINATE_X] < axmax;
+	coly = bymax > a.pos[COORDINATE_Y] && b.pos[COORDINATE_Y] < aymax;
 	return colx && coly;
 }

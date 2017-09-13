@@ -16,6 +16,7 @@ namespace lab309 {
 		friend int collision (const Sprite &a, const Sprite &b);
 		protected:
 			/*ATTRIBUTES*/
+			Vector_2d pos;
 			SDL_Surface *texture;
 			SDL_Rect rect;
 			SDL_Rect displayRect;
@@ -39,8 +40,6 @@ namespace lab309 {
 			
 			/*METHODS*/
 			void translate (const Vector_2d &offset);
-			void moveX (int offset);
-			void moveY (int offset);
 			void blitTo (const Window &window);
 	};
 	

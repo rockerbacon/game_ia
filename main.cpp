@@ -54,7 +54,7 @@ int main (int argc, char **args) {
 	bool running = true;
 	
 	//inicializar janela e modelo do mundo
-	window = new Window("Shark IA", WIDTH, HEIGHT, 8);
+	window = new Window("Shark IA", WIDTH, HEIGHT, LIMIT_30FPS);
 	worldModel = new WorldModel(*window, MESH_H, MESH_W);
 	
 	//carregar texturas
@@ -66,6 +66,8 @@ int main (int argc, char **args) {
 	while (running) {
 		//gerar malha de navegacao
 		running = handleInput();
+		
+		timeSeed();
 		
 		//processar interacao de agentes com o mundo
 		worldModel->timePasses();
@@ -86,9 +88,9 @@ int main (int argc, char **args) {
 		for (i = worldModel->referencePredatorList().getBeginning(); !i.end(); i++) {
 			i.getData()->blitTo(*window);
 		}
-		std::cout << "animals are blitted" << std::endl;	//debug
+		//std::cout << "animals are blitted" << std::endl;	//debug
 		window->update();
-		std::cout << "window updates" << std::endl;	//debug
+		//std::cout << "window updates" << std::endl;	//debug
 	}
 	
 end_program:

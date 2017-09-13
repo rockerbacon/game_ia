@@ -45,6 +45,7 @@ void lab309::Window::update (void) {
 	if (this->lastUpdate - previousUpdate < this->frameLimit) {
 		SDL_Delay(this->frameLimit-this->lastUpdate+previousUpdate);
 	}
+	//std::cout << (SDL_GetTicks() - previousUpdate)/1000.0 << std::endl;	//debug
 	SDL_UpdateWindowSurface(this->window);
 	SDL_FillRect(this->surface, NULL, 0);
 }

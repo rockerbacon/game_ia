@@ -36,8 +36,8 @@ const lab309::List<lab309::Animal*>& lab309::WorldModel::referencePredatorList (
 
 /*METHODS*/
 lab309::Vector_2d lab309::WorldModel::discretizeToNavmesh (Vector_2d coordinate) {
-	coordinate[COORDINATE_X] /= this->window->getWidth()/this->navmesh.getColums();
-	coordinate[COORDINATE_Y] /= this->window->getHeight()/this->navmesh.getLines();
+	coordinate[COORDINATE_X] = (int)coordinate[COORDINATE_X] / (this->window->getWidth()/this->navmesh.getColums());
+	coordinate[COORDINATE_Y] = (int)coordinate[COORDINATE_Y] / (this->window->getHeight()/this->navmesh.getLines());
 	
 	return coordinate;
 }
@@ -113,7 +113,6 @@ void lab309::WorldModel::preyReproduce (void) {
 			b = j.getData();
 			//colisao peixe-peixe
 			if (collision(*a, *b)) {
-				//printf("prey-prey collision\n");	//debug
 				Vector_2d c;
 				c[COORDINATE_X] = (float)randomBetween(a->getXPos() - a->getDisplayWidth(), a->getXPos()+a->getDisplayWidth()),
 				c[COORDINATE_Y] = (float)randomBetween(a->getYPos() - a->getDisplayHeight(), a->getYPos()+a->getDisplayHeight());
