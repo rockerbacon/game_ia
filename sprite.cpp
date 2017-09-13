@@ -9,11 +9,11 @@ lab309::Sprite::Sprite (SDL_Surface *texture, int rectWidth, int rectHeight, flo
 
 /*GETTERS*/
 lab309::Vector_2d lab309::Sprite::getSpritePos (void) const {
-	return { this->rect.x/this->rect.w, this->rect.y/this->rect.h };
+	return { (float)this->rect.x/this->rect.w, (float)this->rect.y/this->rect.h };
 }
 
 lab309::Vector_2d lab309::Sprite::getPos (void) const {
-	return { this->displayRect.x, this->displayRect.y };
+	return { (float)this->displayRect.x, (float)this->displayRect.y };
 }
 
 int lab309::Sprite::getXPos (void) const {
@@ -25,7 +25,7 @@ int lab309::Sprite::getYPos (void) const {
 }
 
 lab309::Vector_2d lab309::Sprite::getCenter (void) const {
-	return { this->displayRect.x+this->displayRect.w/2, this->displayRect.y+this->displayRect.h/2 };
+	return { (float)this->displayRect.x+this->displayRect.w/2.0f, (float)this->displayRect.y+this->displayRect.h/2.0f };
 }
 
 int lab309::Sprite::getDisplayWidth (void) const {
@@ -38,13 +38,13 @@ int lab309::Sprite::getDisplayHeight (void) const {
 
 /*SETTERS*/
 void lab309::Sprite::setSpritePos (const lab309::Vector_2d &pos) {
-	this->rect.x = pos[COORDINATE_X]*this->rect.w;
-	this->rect.y = pos[COORDINATE_Y]*this->rect.h;
+	this->rect.x = (int)(pos[COORDINATE_X]*this->rect.w);
+	this->rect.y = (int)(pos[COORDINATE_Y]*this->rect.h);
 }
 
 void lab309::Sprite::setPos (const lab309::Vector_2d &pos) {
-	this->displayRect.x = pos[COORDINATE_X];
-	this->displayRect.y = pos[COORDINATE_Y];
+	this->displayRect.x = (int)pos[COORDINATE_X];
+	this->displayRect.y = (int)pos[COORDINATE_Y];
 }
 
 /*METHODS*/

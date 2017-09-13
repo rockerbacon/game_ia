@@ -1,5 +1,6 @@
 #include "window.h"
 #include <SDL2/SDL_image.h>
+#include <iostream>
 
 lab309::Window::Window (const char *title, unsigned int width, unsigned int hight, unsigned int frameLimit) {
 	IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);
@@ -42,7 +43,7 @@ void lab309::Window::update (void) {
 	double previousUpdate = this->lastUpdate;
 	this->lastUpdate = SDL_GetTicks();
 	if (this->lastUpdate - previousUpdate < this->frameLimit) {
-		SDL_Delay(this->frameLimit-this->lastUpdate-previousUpdate);
+		SDL_Delay(this->frameLimit-this->lastUpdate+previousUpdate);
 	}
 	SDL_UpdateWindowSurface(this->window);
 	SDL_FillRect(this->surface, NULL, 0);

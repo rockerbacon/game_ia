@@ -27,15 +27,15 @@ bool handleInput (void) {
 		} else if (event.type == SDL_KEYUP) {
 			switch (event.key.keysym.sym) {
 				case SDLK_RIGHT:
-					worldModel->timePasses();
+					//worldModel->timePasses();
 					//atualizar IA
 				break;
 			}
 		} else if (event.type == SDL_MOUSEBUTTONUP) {
 			if (event.button.button == SDL_BUTTON_LEFT) {
-				worldModel->addPredator(newPredator(), {event.button.x, event.button.y});
+				worldModel->addPredator(newPredator(), {(float)event.button.x, (float)event.button.y});
 			} else if (event.button.button == SDL_BUTTON_RIGHT) {
-				worldModel->addPrey(newPrey(), {event.button.x, event.button.y});
+				worldModel->addPrey(newPrey(), {(float)event.button.x, (float)event.button.y});
 			}
 		}
 	}
@@ -54,7 +54,7 @@ int main (int argc, char **args) {
 	bool running = true;
 	
 	//inicializar janela e modelo do mundo
-	window = new Window("Shark IA", WIDTH, HEIGHT, LIMIT_NONE);
+	window = new Window("Shark IA", WIDTH, HEIGHT, 8);
 	worldModel = new WorldModel(*window, MESH_H, MESH_W);
 	
 	//carregar texturas
@@ -69,10 +69,15 @@ int main (int argc, char **args) {
 		
 		//processar interacao de agentes com o mundo
 		worldModel->timePasses();
+		//std::cout << "time passes" << std::endl;	//debug
 		worldModel->elderDie();
+		//std::cout << "the elder die" << std::endl;	//debug
 		worldModel->preyReproduce();
+		//std::cout << "prey reproduce" << std::endl;	//debug
 		worldModel->predatorEat();
+		//std::cout << "predators eat" << std::endl;	//debug
 		worldModel->preyMove();
+		//std::cout << "prey move" << std::endl;	//debug
 		
 		//desenhar mundo
 		for (i = worldModel->referencePreyList().getBeginning(); !i.end(); i++) {
@@ -81,7 +86,9 @@ int main (int argc, char **args) {
 		for (i = worldModel->referencePredatorList().getBeginning(); !i.end(); i++) {
 			i.getData()->blitTo(*window);
 		}
+		std::cout << "animals are blitted" << std::endl;	//debug
 		window->update();
+		std::cout << "window updates" << std::endl;	//debug
 	}
 	
 end_program:

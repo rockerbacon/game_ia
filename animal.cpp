@@ -38,7 +38,7 @@ void lab309::Animal::reproduce (double time) {
 
 void lab309::Animal::move (const Vector_2d &direction, double timeDelta) {
 	this->translate(this->speed*timeDelta*direction);
-	std::cout << direction << std::endl;	//debug
+	//std::cout << direction << std::endl;	//debug
 }
 
 lab309::Animal* lab309::newPrey (void) {

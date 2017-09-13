@@ -35,12 +35,23 @@ const lab309::List<lab309::Animal*>& lab309::WorldModel::referencePredatorList (
 }
 
 /*METHODS*/
+lab309::Vector_2d lab309::WorldModel::discretizeToNavmesh (Vector_2d coordinate) {
+	coordinate[COORDINATE_X] /= this->window->getWidth()/this->navmesh.getColums();
+	coordinate[COORDINATE_Y] /= this->window->getHeight()/this->navmesh.getLines();
+	
+	return coordinate;
+}
+
 void lab309::WorldModel::mapToNavmesh (List<Animal*>::Iterator iterator) {
-	Vector_2d c = iterator.getData()->getCenter();
-	c[COORDINATE_X] /= this->window->getWidth()/this->navmesh.getColums();
-	c[COORDINATE_Y] /= this->window->getHeight()/this->navmesh.getLines();
+	Vector_2d c = this->discretizeToNavmesh(iterator.getData()->getCenter());
 	
 	this->navmesh[c].animal = iterator;
+}
+
+void lab309::WorldModel::removeFromNavmesh (List<Animal*>::Iterator iterator) {
+	Vector_2d c = this->discretizeToNavmesh(iterator.getData()->getCenter());
+	
+	this->navmesh[c].animal = List<Animal*>::Iterator();
 }
 
 void lab309::WorldModel::addPrey (Animal *prey, const Vector_2d &pos) {
@@ -70,6 +81,7 @@ void lab309::WorldModel::elderDie (void) {
 	while (!i.end()) {
 		prey = i.getData();
 		if (prey->isOld(this->date)) {
+			this->removeFromNavmesh(i);
 			delete(prey);
 			this->prey.remove(i);
 		} else {
@@ -81,6 +93,7 @@ void lab309::WorldModel::elderDie (void) {
 	while (!i.end()) {
 		predator = i.getData();
 		if (predator->isOld(this->date)) {
+			this->removeFromNavmesh(i);
 			delete(predator);
 			this->predator.remove(i);
 		} else {
@@ -102,8 +115,8 @@ void lab309::WorldModel::preyReproduce (void) {
 			if (collision(*a, *b)) {
 				//printf("prey-prey collision\n");	//debug
 				Vector_2d c;
-				c[COORDINATE_X] = randomBetween(a->getXPos()-a->getDisplayWidth(), a->getXPos()+a->getDisplayWidth()),
-				c[COORDINATE_Y] = randomBetween(a->getYPos()-a->getDisplayHeight(), a->getYPos()+a->getDisplayHeight());
+				c[COORDINATE_X] = (float)randomBetween(a->getXPos() - a->getDisplayWidth(), a->getXPos()+a->getDisplayWidth()),
+				c[COORDINATE_Y] = (float)randomBetween(a->getYPos() - a->getDisplayHeight(), a->getYPos()+a->getDisplayHeight());
 				this->addPrey(newPrey(), c);
 				a->reproduce(this->date);
 				b->reproduce(this->date);
@@ -136,9 +149,11 @@ void lab309::WorldModel::preyMove (void) {
 	lab309::List<Animal*>::Iterator i;
 	Vector_2d direction;
 	for (i = this->prey.getBeginning(); !i.end(); i++) {
+		this->removeFromNavmesh(i);
 		direction = this->movementWheel[randomBetween(0, 5)];
 		//std::cout << direction << std::endl;	//debug
 		//std::cout << this->window->getTimeDelta() << std::endl;	//debug
 		i.getData()->move(direction, this->window->getTimeDelta());
+		this->mapToNavmesh(i);
 	}
 }

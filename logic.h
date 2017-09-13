@@ -28,7 +28,9 @@ namespace lab309 {
 			List<Animal*> predator;
 			const Vector_2d movementWheel[5] = {DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_DOWN, {0,0}};
 			
+			Vector_2d discretizeToNavmesh(Vector_2d coordinate);
 			void mapToNavmesh (List<Animal*>::Iterator iterator);
+			void removeFromNavmesh(List<Animal*>::Iterator iterator);
 			
 		public:
 			/*CONSTRUCTORS*/
