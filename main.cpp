@@ -79,6 +79,8 @@ int main (int argc, char **args) {
 		worldModel->predatorEat();
 		//std::cout << "predators eat" << std::endl;	//debug
 		worldModel->preyMove();
+		worldModel->leaderPredatorMoves();
+		worldModel->predatorMove();
 		//std::cout << "prey move" << std::endl;	//debug
 		
 		//desenhar mundo

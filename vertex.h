@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <stdio.h>
 #include <iostream>
+#include <math.h>
 
 #define COORDINATE_X 0
 #define COORDINATE_Y 1
@@ -25,6 +26,8 @@ namespace lab309 {
 		static_assert(numberOfDimensions != 0, "Cannot have vertex with 0 dimensions");
 
 		template<size_t any> friend class Vertex;
+		template<size_t any> friend float manhattanDistance (const Vertex<any> &a, const Vertex<any> &b);
+		template<size_t any> friend Vertex<any> normalize (const Vertex<any> &vector);
 
 		/*ATTRIBUTES*/
 		private:
@@ -89,6 +92,12 @@ namespace lab309 {
 	/*VERTEX_3D*/
 	template<> template<>
 	Vertex_3d::operator Vertex_2d (void) const;
+	
+	template<size_t any>
+	float manhattanDistance (const Vertex<any> &a, const Vertex<any> &b);
+	
+	template<size_t any>
+	Vertex<any> normalize (const Vertex<any> &vector);
 
 }
 
@@ -290,6 +299,35 @@ std::ostream& lab309::operator<< (std::ostream &stream, const Vertex<numberOfDim
 	}
 	stream << ')';
 	return stream;
+}
+
+template<size_t any>
+float lab309::manhattanDistance (const Vertex<any> &a, const Vertex<any> &b) {
+	float result = 0;
+	size_t i;
+	for (i = 0; i < any; i++) {
+		result += fabs(a[i]-b[i]);
+	}
+	return result;
+}
+
+template<size_t any>
+lab309::Vertex<any> lab309::normalize (const Vertex<any> &vector) {
+	Vertex<any> result;
+	float norm;
+	size_t i;
+	
+	norm = 0;
+	for (i = 0; i < any; i++) {
+		norm += vector[i]*vector[i]; 
+	}
+	norm = sqrt(norm);
+	
+	for (i = 0; i < any; i++) {
+		result[i] = vector[i]/norm;
+	}
+	
+	return result;
 }
 
 #endif

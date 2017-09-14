@@ -1,6 +1,7 @@
 #include "logic.h"
 #include "random.h"
 #include <iostream>
+#include <math.h>
 
 /*WORLDMODEL*/
 /*CONSTRUCTORS*/
@@ -8,6 +9,11 @@ lab309::WorldModel::WorldModel (const Window &window, size_t navmeshHeight, size
 	this->date = SDL_GetTicks()/1000.0;
 	this->window = &window;
 	this->navmesh = Matrix<struct Cell>(navmeshHeight, navmeshWidth);
+	for (size_t i = 0; i < this->navmesh.getLines(); i++) {
+		for (size_t j = 0; j < this->navmesh.getColums(); j++) {
+			this->navmesh[i][j] = {List<Animal*>::Iterator(), {0.0f,0.0f}, 0.0f, {0.0f, 0.0f}, 0.0f};
+		}
+	}
 }
 
 lab309::WorldModel::~WorldModel (void) {
@@ -155,4 +161,76 @@ void lab309::WorldModel::preyMove (void) {
 		i.getData()->move(direction, this->window->getTimeDelta());
 		this->mapToNavmesh(i);
 	}
+}
+
+void lab309::WorldModel::leaderPredatorMoves (void) {
+	if (this->predator.getLength() == 0) {
+		return;
+	}
+	
+	List<Animal*>::Iterator leaderIndex = this->predator.getBeginning();	//tubarao mais velho eh sempre o primeiro da lista
+	Animal* leader = leaderIndex.getData();
+	
+	if (this->prey.getLength() > 0) {
+		List<Animal*>::Iterator closestPreyIndex = findClosest(leader->getCenter(), this->prey);
+		Animal *closestPrey = closestPreyIndex.getData();
+		if (leader->sees(closestPrey->getCenter())) {
+			leader->setState(STATE_CHASING);
+			Vector_2d direction = normalize(closestPrey->getCenter() - leader->getCenter());
+			//std::cout << direction << std::endl;	//debug
+			Vector_2d pos = discretizeToNavmesh(leader->getCenter());
+			
+			//predador deixa bilhete avisando a direcao que andou
+			this->navmesh[pos].predatorTrace = 0.5f*(this->navmesh[pos].predatorTrace + direction);
+			this->navmesh[pos].lastPredatorTraceUpdate = this->date;
+			
+			//predador move
+			this->removeFromNavmesh(leaderIndex);
+			leader->move(direction, this->window->getTimeDelta());
+			this->mapToNavmesh(leaderIndex);
+		} else {
+			leader->setState(STATE_IDLE);
+		}
+		
+	} else {
+		leader->setState(STATE_IDLE);
+	}
+	
+}
+
+void lab309::WorldModel::predatorMove (void) {
+	if (this->predator.getLength() < 1) {
+		return;
+	}
+	lab309::List<Animal*>::Iterator i;
+	Vector_2d direction;
+	for (i = this->predator.getBeginning(); !i.end(); i++) {
+		switch (i.getData()->getState()) {
+			case STATE_IDLE:
+				this->removeFromNavmesh(i);
+				direction = this->movementWheel[randomBetween(0, 5)];
+				//std::cout << direction << std::endl;	//debug
+				//std::cout << this->window->getTimeDelta() << std::endl;	//debug
+				i.getData()->move(direction, this->window->getTimeDelta());
+				this->mapToNavmesh(i);
+			break;
+		}
+	}
+}
+
+/*NAMESPACE*/
+lab309::List<lab309::Animal*>::Iterator lab309::findClosest (const Vector_2d &start, const List<Animal*> &list) {
+	List<Animal*>::Iterator i, min;
+	float minDistance;
+	
+	min = list.getBeginning();
+	minDistance = manhattanDistance(start, min.getData()->getCenter());
+	for (i = min.next(); !i.end(); i++) {
+		if (manhattanDistance(start, i.getData()->getCenter()) < minDistance) {
+			min = i;
+			minDistance = manhattanDistance(start, i.getData()->getCenter());
+		}
+	}
+	
+	return min;
 }

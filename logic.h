@@ -1,5 +1,6 @@
 /*
- * Data armazenada em segundos
+ * Tempo sempre em segundos
+ * Distancia sempre em pixels
  */
 
 #ifndef LAB309_AI_H
@@ -12,12 +13,18 @@
 #include "vertex.h"
 #include <SDL2/SDL.h>
 
+#define PREDATOR_FOV 100
+
 namespace lab309 {
 	
 	class WorldModel {
 		private:
 			struct Cell {
 				List<Animal*>::Iterator animal;
+				Vector_2d predatorTrace;
+				double lastPredatorTraceUpdate;
+				Vector_2d preyTrace;
+				double lastPreyTraceUpdate;
 			};
 			
 			/*ATTRIBUTES*/
@@ -51,8 +58,13 @@ namespace lab309 {
 			void preyReproduce (void);
 			void predatorEat (void);
 			void preyMove (void);
+			void leaderPredatorMoves (void);
+			void predatorMove (void);
 			
 	};
+	
+	bool see (const Animal *a, const Animal *b);
+	List<Animal*>::Iterator findClosest (const Vector_2d &start, const List<Animal*> &list);
 };
 
 #endif
