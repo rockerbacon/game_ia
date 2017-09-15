@@ -133,7 +133,7 @@ void lab309::WorldModel::preyReproduce (void) {
 			b = j.getData();
 			//colisao peixe-peixe
 			if (collision(*a, *b)) {
-				Vector<float> c;
+				Vector<float> c(2);
 				c[COORDINATE_X] = (float)randomBetween(a->getXPos() - a->getDisplayWidth(), a->getXPos()+a->getDisplayWidth()),
 				c[COORDINATE_Y] = (float)randomBetween(a->getYPos() - a->getDisplayHeight(), a->getYPos()+a->getDisplayHeight());
 				this->addPrey(newPrey(), c);

@@ -25,7 +25,7 @@ namespace lab309 {
 			double lastPreyTraceUpdate;
 			
 			Cell (List<Animal*>::Iterator animal, const Vector<float> &predatorTrace, double lastPredatorTraceUpdate, const Vector<float> &preyTrace, double lastPreyTraceUpdate);
-			};
+	};
 	
 	class WorldModel {
 		private:
