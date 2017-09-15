@@ -3,15 +3,23 @@
 #include <iostream>
 #include <math.h>
 
+lab309::Cell::Cell (List<Animal*>::Iterator animal, const Vector<float> &predatorTrace, double lastPredatorTraceUpdate, const Vector<float> &preyTrace, double lastPreyTraceUpdate) {
+	this->animal = animal;
+	this->predatorTrace = predatorTrace;
+	this->lastPredatorTraceUpdate = lastPredatorTraceUpdate;
+	this->preyTrace = preyTrace;
+	this->lastPreyTraceUpdate = lastPreyTraceUpdate;
+}
+
 /*WORLDMODEL*/
 /*CONSTRUCTORS*/
 lab309::WorldModel::WorldModel (const Window &window, size_t navmeshHeight, size_t navmeshWidth) {
 	this->date = SDL_GetTicks()/1000.0;
 	this->window = &window;
-	this->navmesh = Matrix<struct Cell>(navmeshHeight, navmeshWidth);
+	this->navmesh = Matrix<Cell*>(navmeshHeight, navmeshWidth);
 	for (size_t i = 0; i < this->navmesh.getLines(); i++) {
 		for (size_t j = 0; j < this->navmesh.getColums(); j++) {
-			this->navmesh[i][j] = {List<Animal*>::Iterator(), {0.0f,0.0f}, 0.0f, {0.0f, 0.0f}, 0.0f};
+			this->navmesh[i][j] = new Cell(List<Animal*>::Iterator(), {0.0f,0.0f}, 0.0f, {0.0f, 0.0f}, 0.0f);
 		}
 	}
 }
@@ -24,6 +32,12 @@ lab309::WorldModel::~WorldModel (void) {
 	}
 	for (i = this->predator.getBeginning(); !i.end(); i++) {
 		delete(i.getData());
+	}
+	
+	for (size_t i = 0; i < this->navmesh.getLines(); i++) {
+		for (size_t j = 0; j < this->navmesh.getColums(); j++) {
+			delete(this->navmesh[i][j]);
+		}
 	}
 }
 
@@ -41,7 +55,7 @@ const lab309::List<lab309::Animal*>& lab309::WorldModel::referencePredatorList (
 }
 
 /*METHODS*/
-lab309::Vector_2d lab309::WorldModel::discretizeToNavmesh (Vector_2d coordinate) {
+lab309::Vector<float> lab309::WorldModel::discretizeToNavmesh (Vector<float> coordinate) {
 	coordinate[COORDINATE_X] = (int)coordinate[COORDINATE_X] / (this->window->getWidth()/this->navmesh.getColums());
 	coordinate[COORDINATE_Y] = (int)coordinate[COORDINATE_Y] / (this->window->getHeight()/this->navmesh.getLines());
 	
@@ -49,25 +63,25 @@ lab309::Vector_2d lab309::WorldModel::discretizeToNavmesh (Vector_2d coordinate)
 }
 
 void lab309::WorldModel::mapToNavmesh (List<Animal*>::Iterator iterator) {
-	Vector_2d c = this->discretizeToNavmesh(iterator.getData()->getCenter());
+	Vector<float> c = this->discretizeToNavmesh(iterator.getData()->getCenter());
 	
-	this->navmesh[c].animal = iterator;
+	this->navmesh[c]->animal = iterator;
 }
 
 void lab309::WorldModel::removeFromNavmesh (List<Animal*>::Iterator iterator) {
-	Vector_2d c = this->discretizeToNavmesh(iterator.getData()->getCenter());
+	Vector<float> c = this->discretizeToNavmesh(iterator.getData()->getCenter());
 	
-	this->navmesh[c].animal = List<Animal*>::Iterator();
+	this->navmesh[c]->animal = List<Animal*>::Iterator();
 }
 
-void lab309::WorldModel::addPrey (Animal *prey, const Vector_2d &pos) {
+void lab309::WorldModel::addPrey (Animal *prey, const Vector<float> &pos) {
 	prey->setPos(pos);
 	prey->setBirthDate(this->date);
 	this->prey.add(this->prey.getLength(), prey);
 	this->mapToNavmesh(this->prey.getEnd());
 }
 
-void lab309::WorldModel::addPredator (Animal *predator, const Vector_2d &pos) {
+void lab309::WorldModel::addPredator (Animal *predator, const Vector<float> &pos) {
 	predator->setPos(pos);
 	predator->setBirthDate(this->date);
 	this->predator.add(this->predator.getLength(), predator);
@@ -119,7 +133,7 @@ void lab309::WorldModel::preyReproduce (void) {
 			b = j.getData();
 			//colisao peixe-peixe
 			if (collision(*a, *b)) {
-				Vector_2d c;
+				Vector<float> c;
 				c[COORDINATE_X] = (float)randomBetween(a->getXPos() - a->getDisplayWidth(), a->getXPos()+a->getDisplayWidth()),
 				c[COORDINATE_Y] = (float)randomBetween(a->getYPos() - a->getDisplayHeight(), a->getYPos()+a->getDisplayHeight());
 				this->addPrey(newPrey(), c);
@@ -152,7 +166,7 @@ void lab309::WorldModel::predatorEat (void) {
 
 void lab309::WorldModel::preyMove (void) {
 	lab309::List<Animal*>::Iterator i;
-	Vector_2d direction;
+	Vector<float> direction;
 	for (i = this->prey.getBeginning(); !i.end(); i++) {
 		this->removeFromNavmesh(i);
 		direction = this->movementWheel[randomBetween(0, 5)];
@@ -176,13 +190,13 @@ void lab309::WorldModel::leaderPredatorMoves (void) {
 		Animal *closestPrey = closestPreyIndex.getData();
 		if (leader->sees(closestPrey->getCenter())) {
 			leader->setState(STATE_CHASING);
-			Vector_2d direction = normalize(closestPrey->getCenter() - leader->getCenter());
+			Vector<float> direction = normalize(closestPrey->getCenter() - leader->getCenter());
 			//std::cout << direction << std::endl;	//debug
-			Vector_2d pos = discretizeToNavmesh(leader->getCenter());
+			Vector<float> pos = discretizeToNavmesh(leader->getCenter());
 			
 			//predador deixa bilhete avisando a direcao que andou
-			this->navmesh[pos].predatorTrace = 0.5f*(this->navmesh[pos].predatorTrace + direction);
-			this->navmesh[pos].lastPredatorTraceUpdate = this->date;
+			this->navmesh[pos]->predatorTrace = 0.5f*(this->navmesh[pos]->predatorTrace + direction);
+			this->navmesh[pos]->lastPredatorTraceUpdate = this->date;
 			
 			//predador move
 			this->removeFromNavmesh(leaderIndex);
@@ -203,7 +217,7 @@ void lab309::WorldModel::predatorMove (void) {
 		return;
 	}
 	lab309::List<Animal*>::Iterator i;
-	Vector_2d direction;
+	Vector<float> direction;
 	for (i = this->predator.getBeginning(); !i.end(); i++) {
 		switch (i.getData()->getState()) {
 			case STATE_IDLE:
@@ -219,7 +233,7 @@ void lab309::WorldModel::predatorMove (void) {
 }
 
 /*NAMESPACE*/
-lab309::List<lab309::Animal*>::Iterator lab309::findClosest (const Vector_2d &start, const List<Animal*> &list) {
+lab309::List<lab309::Animal*>::Iterator lab309::findClosest (const Vector<float> &start, const List<Animal*> &list) {
 	List<Animal*>::Iterator i, min;
 	float minDistance;
 	

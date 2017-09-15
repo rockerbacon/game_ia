@@ -10,32 +10,34 @@
 #include "Lab309_ADT_DoublyLinkedList.h"
 #include "sprite.h"
 #include "animal.h"
-#include "vertex.h"
 #include <SDL2/SDL.h>
 
 #define PREDATOR_FOV 100
 
 namespace lab309 {
 	
+	class Cell {
+		public:
+			List<Animal*>::Iterator animal;
+			Vector<float> predatorTrace;
+			double lastPredatorTraceUpdate;
+			Vector<float> preyTrace;
+			double lastPreyTraceUpdate;
+			
+			Cell (List<Animal*>::Iterator animal, const Vector<float> &predatorTrace, double lastPredatorTraceUpdate, const Vector<float> &preyTrace, double lastPreyTraceUpdate);
+			};
+	
 	class WorldModel {
 		private:
-			struct Cell {
-				List<Animal*>::Iterator animal;
-				Vector_2d predatorTrace;
-				double lastPredatorTraceUpdate;
-				Vector_2d preyTrace;
-				double lastPreyTraceUpdate;
-			};
-			
 			/*ATTRIBUTES*/
 			const Window *window;
-			Matrix<struct Cell> navmesh;
+			Matrix<Cell*> navmesh;
 			double date;
 			List<Animal*> prey;
 			List<Animal*> predator;
-			const Vector_2d movementWheel[5] = {DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_DOWN, {0,0}};
+			const Vector<float> movementWheel[5] = {DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_LEFT, DIRECTION_DOWN, {0,0}};
 			
-			Vector_2d discretizeToNavmesh(Vector_2d coordinate);
+			Vector<float> discretizeToNavmesh(Vector<float> coordinate);
 			void mapToNavmesh (List<Animal*>::Iterator iterator);
 			void removeFromNavmesh(List<Animal*>::Iterator iterator);
 			
@@ -50,8 +52,8 @@ namespace lab309 {
 			const List<Animal*>& referencePredatorList (void) const;
 			
 			/*METHODS*/
-			void addPrey (Animal *prey, const Vector_2d &pos);
-			void addPredator (Animal *predator, const Vector_2d &pos);
+			void addPrey (Animal *prey, const Vector<float> &pos);
+			void addPredator (Animal *predator, const Vector<float> &pos);
 			
 			void timePasses (void);
 			void elderDie (void);
@@ -64,7 +66,7 @@ namespace lab309 {
 	};
 	
 	bool see (const Animal *a, const Animal *b);
-	List<Animal*>::Iterator findClosest (const Vector_2d &start, const List<Animal*> &list);
+	List<Animal*>::Iterator findClosest (const Vector<float> &start, const List<Animal*> &list);
 };
 
 #endif

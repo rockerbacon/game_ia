@@ -10,11 +10,11 @@ lab309::Sprite::Sprite (SDL_Surface *texture, int rectWidth, int rectHeight, flo
 }
 
 /*GETTERS*/
-lab309::Vector_2d lab309::Sprite::getSpritePos (void) const {
+lab309::Vector<float> lab309::Sprite::getSpritePos (void) const {
 	return { (float)this->rect.x/this->rect.w, (float)this->rect.y/this->rect.h };
 }
 
-lab309::Vector_2d lab309::Sprite::getPos (void) const {
+lab309::Vector<float> lab309::Sprite::getPos (void) const {
 	return this->pos;
 }
 
@@ -26,7 +26,7 @@ int lab309::Sprite::getYPos (void) const {
 	return this->pos[COORDINATE_Y];
 }
 
-lab309::Vector_2d lab309::Sprite::getCenter (void) const {
+lab309::Vector<float> lab309::Sprite::getCenter (void) const {
 	return { this->pos[COORDINATE_X]+this->displayRect.w/2.0f, this->pos[COORDINATE_Y]+this->displayRect.h/2.0f };
 }
 
@@ -39,12 +39,12 @@ int lab309::Sprite::getDisplayHeight (void) const {
 }
 
 /*SETTERS*/
-void lab309::Sprite::setSpritePos (const lab309::Vector_2d &pos) {
+void lab309::Sprite::setSpritePos (const lab309::Vector<float> &pos) {
 	this->rect.x = (int)(pos[COORDINATE_X]*this->rect.w);
 	this->rect.y = (int)(pos[COORDINATE_Y]*this->rect.h);
 }
 
-void lab309::Sprite::setPos (const lab309::Vector_2d &pos) {
+void lab309::Sprite::setPos (const lab309::Vector<float> &pos) {
 	this->pos = pos;
 }
 
@@ -55,8 +55,8 @@ void lab309::Sprite::blitTo (const lab309::Window &window) {
 	SDL_BlitScaled(this->texture, &this->rect, window.surface, &this->displayRect);
 }
 
-void lab309::Sprite::translate (const Vector_2d &offset) {
-	this->pos += offset;
+void lab309::Sprite::translate (const Vector<float> &offset) {
+	this->pos = this->pos+offset;
 }
 
 int lab309::collision (const lab309::Sprite &a, const lab309::Sprite &b) {

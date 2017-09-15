@@ -50,13 +50,13 @@ void lab309::Animal::reproduce (double time) {
 	this->lastReproduction = time;
 }
 
-void lab309::Animal::move (const Vector_2d &direction, double timeDelta) {
+void lab309::Animal::move (const Vector<float> &direction, double timeDelta) {
 	this->translate(this->speed*timeDelta*direction);
 	//std::cout << direction << std::endl;	//debug
 	//std::cout << this->speed*timeDelta << std::endl;	//debug
 }
 
-bool lab309::Animal::sees (const Vector_2d &point) const {
+bool lab309::Animal::sees (const Vector<float> &point) const {
 	return manhattanDistance(this->getCenter(), point) < this->fieldOfView;
 }
 

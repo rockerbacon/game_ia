@@ -67,8 +67,8 @@ namespace lab309 {
 			bool canReproduce (double time) const;
 			bool isOld (double time) const;
 			void reproduce (double time);
-			void move (const Vector_2d &direction, double timeDelta);
-			bool sees (const Vector_2d &point) const;
+			void move (const Vector<float> &direction, double timeDelta);
+			bool sees (const Vector<float> &point) const;
 	};
 	
 	Animal* newPrey (void);
