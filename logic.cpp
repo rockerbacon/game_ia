@@ -213,21 +213,25 @@ void lab309::WorldModel::leaderPredatorMoves (void) {
 }
 
 void lab309::WorldModel::predatorMove (void) {
-	if (this->predator.getLength() < 1) {
+	if (this->predator.getLength() <= 1) {
 		return;
 	}
-	lab309::List<Animal*>::Iterator i;
-	Vector<float> direction;
-	for (i = this->predator.getBeginning(); !i.end(); i++) {
-		switch (i.getData()->getState()) {
-			case STATE_IDLE:
-				this->removeFromNavmesh(i);
-				direction = this->movementWheel[randomBetween(0, 5)];
-				//std::cout << direction << std::endl;	//debug
-				//std::cout << this->window->getTimeDelta() << std::endl;	//debug
-				i.getData()->move(direction, this->window->getTimeDelta());
-				this->mapToNavmesh(i);
-			break;
+	if (this->prey.getLength() > 0) {
+		List<Animal*>::Iterator leaderIndex = this->predator.getBeginning();	//tubarao mais velho eh sempre o primeiro da lista
+		Animal* leader = leaderIndex.getData();
+		lab309::List<Animal*>::Iterator i;
+		for (i = this->predator.getBeginning(); !i.end(); i++) {
+			switch (i.getData()->getState()) {
+				case STATE_IDLE:
+					this->removeFromNavmesh(i);
+					Vector<float> direction = normalize(leader->getCenter() - i.getData()->getCenter());
+					//direction = this->movementWheel[randomBetween(0, 5)];
+					//std::cout << direction << std::endl;	//debug
+					//std::cout << this->window->getTimeDelta() << std::endl;	//debug
+					i.getData()->move(direction, this->window->getTimeDelta());
+					this->mapToNavmesh(i);
+				break;
+			}
 		}
 	}
 }
